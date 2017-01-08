@@ -181,20 +181,19 @@
     componentDidMount: function () {
       // AmCharts mutates the config object, so we have to make a deep copy to prevent that
       var props = copy(this.props);
-
       this.setState({
         chart: AmCharts.makeChart(this.state.id, props)
       });
+
     },
 
-    // TODO is this correct ? should this use componentWillUpdate instead ?
-    componentDidUpdate: function (oldProps) {
-      var didUpdate = updateChartObject(this.state.chart, oldProps, this.props);
-
-      if (didUpdate) {
-        // TODO is this correct ?
-        this.state.chart.validateNow(true, false);
+    shouldComponentUpdate: function(newProps){
+      if(this.state.chart === null){
+        return false;
       }
+      //var didUpdate = updateChartObject(this.state.chart, this.props, newProps);
+      this.state.chart.validateData();
+      return false;
     },
 
     componentWillUnmount: function () {
