@@ -1,3 +1,5 @@
+
+
 (function () {
   function getType(x) {
     // TODO make this faster ?
@@ -178,9 +180,34 @@
       };
     },
 
+    makeFixedCategoryHeights : function(){
+      AmCharts.addInitHandler(function(chart) {
+        // set base values
+        console.log('in handler func')
+        var categoryWidth = 25;
+        var containerHeight = 500;
+
+        // calculate bottom margin based on number of data points
+        var chartHeight = categoryWidth * chart.dataProvider.length;
+        var marginBottom = containerHeight - chartHeight;
+        if(chartHeight === 25){
+          chartHeight = 70;
+          marginBottom = 430;
+        }
+        // set the bottom margin
+        if (0 < marginBottom) {
+          //chart.autoMargins = false;
+          chart.valueAxes[0].ignoreAxisWidth = true;
+          chart.marginBottom = marginBottom;
+        }
+
+      }, ['gantt']);
+    },
+
     componentDidMount: function () {
       // AmCharts mutates the config object, so we have to make a deep copy to prevent that
       var props = copy(this.props);
+      this.makeFixedCategoryHeights();
       this.setState({
         chart: AmCharts.makeChart(this.state.id, props)
       });
@@ -188,12 +215,22 @@
     },
 
     shouldComponentUpdate: function(newProps){
-      if(this.state.chart === null){
+      if(this.state.chart === null ){ //|| newProps.dataProvider.length === 0
         return false;
       }
+      const thingFilterChanged = !isEqualArray(this.props.dataProvider,newProps.dataProvider);
+      //const thingFilterChanged = (this.props.dataProvider.length !== newProps.dataProvider.length);
+      if(thingFilterChanged){
+        return true;
+      }
+      else{
+        this.state.chart.validateData();
+        return false;
+      }
+      //this.state.dataProvider = newProps.dataProvider;
       //var didUpdate = updateChartObject(this.state.chart, this.props, newProps);
-      this.state.chart.validateData();
-      return false;
+      //this.state.chart.validateData();
+      //return false;
     },
 
     componentWillUnmount: function () {
@@ -201,13 +238,22 @@
         this.state.chart.clear();
       }
     },
+    componentDidUpdate(prevProps, prevState){
+      var props = copy(this.props);
+      this.makeFixedCategoryHeights();
+      this.setState({
+        chart: AmCharts.makeChart(this.state.id, props)
+      });
+    },
 
     render: function () {
       return React.DOM.div({
         id: this.state.id,
         style: {
           width: "100%",
-          height: "100%"
+          height: "100%",
+          'margin-top' : "15px",
+          'background-color' : 'white'
         }
       });
     }
