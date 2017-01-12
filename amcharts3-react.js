@@ -197,7 +197,7 @@
         // set the bottom margin
         if (0 < marginBottom) {
           //chart.autoMargins = false;
-          chart.valueAxes[0].ignoreAxisWidth = true;
+          //chart.valueAxes[0].ignoreAxisWidth = true;
           chart.marginBottom = marginBottom;
         }
 
