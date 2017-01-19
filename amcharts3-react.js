@@ -238,7 +238,7 @@
         this.state.chart.clear();
       }
     },
-    componentDidUpdate(prevProps, prevState){
+    componentDidUpdate : function(prevProps, prevState){
       var props = copy(this.props);
       this.makeFixedCategoryHeights();
       this.setState({
