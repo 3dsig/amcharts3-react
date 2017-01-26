@@ -1,7 +1,7 @@
 Installation
 ============
 
-If you are using `<script>` tags
+If you are using `<script>` tags 
 --------------------------------
 
 1. Use `git` to download the `amcharts3-react` plugin:
